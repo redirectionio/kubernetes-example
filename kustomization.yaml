@@ -1,0 +1,3 @@
+resources:
+    - agent-deployment.yaml
+    - proxy-deployment.yaml

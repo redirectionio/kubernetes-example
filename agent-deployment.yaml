@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: redirectionio-agent
+    labels:
+        app: demo
+spec:
+    ports:
+        - port: 10301
+    selector:
+        app: demo
+        tier: agent
+    clusterIP: None
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: redirectionio-agent-volume
+    labels:
+        app: demo
+spec:
+    accessModes:
+        - ReadWriteOnce
+    resources:
+        requests:
+            storage: 20Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: redirectionio-agent
+    labels:
+        app: demo
+spec:
+    selector:
+        matchLabels:
+            app: demo
+            tier: agent
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                app: demo
+                tier: agent
+        spec:
+            containers:
+                - image: gcr.io/redirection-io-test/redirectionio-agent:v1
+                  name: redirectionio-agent
+                  ports:
+                      - containerPort: 10301
+                        name: agent
+                  volumeMounts:
+                      - name: agent-persistent-storage
+                        mountPath: /var/lib/redirectionoio
+            volumes:
+                - name: agent-persistent-storage
+                  persistentVolumeClaim:
+                      claimName: redirectionio-agent-volume
