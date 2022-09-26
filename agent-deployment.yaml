@@ -52,7 +52,7 @@ spec:
                         name: agent
                   volumeMounts:
                       - name: agent-persistent-storage
-                        mountPath: /var/lib/redirectionoio
+                        mountPath: /var/lib/redirectionio
             volumes:
                 - name: agent-persistent-storage
                   persistentVolumeClaim:
